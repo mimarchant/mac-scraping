@@ -37,6 +37,9 @@ function sendEmail(subject, htmlContent) {
 async function checkLaptops() {
   const browser = await puppeteer.launch({
     headless: true,
+    env: {
+      DISPLAY: "0",
+    },
     executablePath: "/usr/bin/google-chrome-stable",
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
   });
