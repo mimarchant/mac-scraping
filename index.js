@@ -36,7 +36,7 @@ function sendEmail(subject, htmlContent) {
 // Función para hacer scraping
 async function checkLaptops() {
   const browser = await puppeteer.launch({
-    headless: false, // Cambia a false para modo no headless
+    headless: true, // Cambia a false para modo no headless
     args: [
       "--no-sandbox",
       "--disable-setuid-sandbox",
