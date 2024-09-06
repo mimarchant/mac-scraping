@@ -41,7 +41,7 @@ async function checkLaptops() {
       DISPLAY: "0",
     },
     executablePath: "/usr/bin/google-chrome-stable",
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    args: ["--no-sandbox"],
   });
   const page = await browser.newPage();
   await page.goto("https://simple.ripley.cl/tecno/mundo-apple/macbook?s=mdco");
