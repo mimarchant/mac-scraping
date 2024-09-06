@@ -36,14 +36,26 @@ function sendEmail(subject, htmlContent) {
 // Función para hacer scraping
 async function checkLaptops() {
   const browser = await puppeteer.launch({
-    headless: true,
-    env: {
-      DISPLAY: "0",
-    },
-    executablePath: "/usr/bin/google-chrome-stable",
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    headless: false, // Cambia a false para modo no headless
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage", // Esto puede ayudar a evitar problemas de uso de memoria en GitHub Actions
+      "--disable-blink-features=AutomationControlled", // Para evitar la detección
+    ],
   });
   const page = await browser.newPage();
+
+  await page.setUserAgent(
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36"
+  );
+
+  // Deshabilitar la detección de `navigator.webdriver`
+  await page.evaluateOnNewDocument(() => {
+    Object.defineProperty(navigator, "webdriver", {
+      get: () => false,
+    });
+  });
   await page.goto("https://simple.ripley.cl/tecno/mundo-apple/macbook?s=mdco");
 
   const laptops = await page.$$eval(".catalog-product-item", (items) => {
