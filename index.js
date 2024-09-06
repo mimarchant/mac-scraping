@@ -35,7 +35,7 @@ function sendEmail(subject, htmlContent) {
 
 // Función para hacer scraping
 async function checkLaptops() {
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
   await page.goto("https://simple.ripley.cl/tecno/mundo-apple/macbook?s=mdco");
 
