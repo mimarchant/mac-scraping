@@ -1,6 +1,8 @@
 import puppeteer from "puppeteer";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import puppeteerExtra from "puppeteer-extra";
+import stealth from "puppeteer-extra-plugin-stealth";
 
 // Cargar variables de entorno
 dotenv.config();
@@ -35,8 +37,19 @@ function sendEmail(subject, htmlContent) {
 
 // Función para hacer scraping
 async function checkLaptops() {
-  const browser = await puppeteer.launch({
-    headless: false, // Cambia a false para modo no headless
+  puppeteerExtra.use(Stealth());
+  /*   const browser = await puppeteer.launch({
+    headless: true, // Cambia a false para modo no headless
+    args: [
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      "--disable-dev-shm-usage", // Esto puede ayudar a evitar problemas de uso de memoria en GitHub Actions
+      "--disable-blink-features=AutomationControlled", // Para evitar la detección
+    ],
+  }); */
+
+  const browser = puppeteerExtra.launch({
+    headless: true,
     args: [
       "--no-sandbox",
       "--disable-setuid-sandbox",
@@ -45,6 +58,8 @@ async function checkLaptops() {
     ],
   });
   const page = await browser.newPage();
+
+  await page.setViewport({ width: 1920, height: 1080 });
 
   await page.setUserAgent(
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36"
