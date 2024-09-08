@@ -2,7 +2,7 @@ name: Scrape
 
 on:
   schedule:
-    - cron: "55 * * * *"
+    - cron: "8 * * * *"
 
 jobs:
   resources:
