@@ -83,7 +83,7 @@ async function checkLaptops() {
 
   await browser.close();
 
-  console.log(laptops, "laptops encontrados")
+  console.log(laptops, "laptops encontrados");
 
   // Filtrar por laptops Mac y con precio menor a 800.000 pesos
   const filteredLaptops = laptops.filter(
