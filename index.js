@@ -58,8 +58,6 @@ async function checkLaptops() {
   });
   await page.goto("https://simple.ripley.cl/tecno/mundo-apple/macbook?s=mdco");
 
-  await page.waitForTimeout(5000); // Espera 5 segundos para que la página cargue completamente
-
   const content = await page.content();
   console.log(content); // Esto imprimirá el HTML de la página para verificar si está cargando
 
