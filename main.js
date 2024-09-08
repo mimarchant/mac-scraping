@@ -19,7 +19,7 @@ puppeteerExtra.use(Stealth());
     "https://simple.ripley.cl/tecno/mundo-apple/macbook?s=mdco"
   );
 
-  const content = await page.content();
+  const content = await newpage.content();
   console.log(content); // Esto imprimirá el HTML de la página para verificar si está cargando
   await newpage.waitForNetworkIdle(); // Wait for network resources to fully load
 
