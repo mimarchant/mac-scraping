@@ -1,13 +1,9 @@
-import puppeteerExtra from "puppeteer-extra";
-import Stealth from "puppeteer-extra-plugin-stealth";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import puppeteer from "puppeteer";
 
 // Cargar variables de entorno
 dotenv.config();
-
-// Usar plugin Stealth para evitar ser detectado
-puppeteerExtra.use(Stealth());
 
 // Configurar el servicio de correo (Gmail)
 const transporter = nodemailer.createTransport({
@@ -39,7 +35,7 @@ function sendEmail(subject, htmlContent) {
 
 // Función para hacer scraping
 async function checkLaptops() {
-  const browserObj = await puppeteerExtra.launch({
+  const browserObj = await puppeteer.launch({
     headless: false, // Usar headful en GitHub Actions
     executablePath: process.env.PUPPETEER_EXEC_PATH || undefined, // Usar executablePath solo en GitHub Actions
     args: [
