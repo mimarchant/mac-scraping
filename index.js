@@ -70,6 +70,9 @@ function sendEmail(subject, htmlContent) {
     });
   });
 
+  const content = await newpage.content();
+  console.log(content, "content");
+
   await browserObj.close();
 
   console.log(laptops, "laptops encontrados");
