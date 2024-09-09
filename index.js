@@ -1,12 +1,12 @@
-import puppeteer from "puppeteer";
-import nodemailer from "nodemailer";
-import dotenv from "dotenv";
 import puppeteerExtra from "puppeteer-extra";
 import Stealth from "puppeteer-extra-plugin-stealth";
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
 
 // Cargar variables de entorno
 dotenv.config();
 
+// Usar plugin Stealth para evitar ser detectado
 puppeteerExtra.use(Stealth());
 
 // Configurar el servicio de correo (Gmail)
@@ -39,7 +39,16 @@ function sendEmail(subject, htmlContent) {
 
 // Función para hacer scraping
 async function checkLaptops() {
-  const browserObj = await puppeteerExtra.launch();
+  const browserObj = await puppeteerExtra.launch({
+    headless: false, // Usar headful en GitHub Actions
+    executablePath: process.env.PUPPETEER_EXEC_PATH || undefined, // Usar executablePath solo en GitHub Actions
+    args: [
+      "--no-sandbox", // Evita problemas de permisos
+      "--disable-setuid-sandbox",
+      "--disable-gpu", // Desactivar aceleración por GPU en entornos CI
+    ],
+  });
+
   const newpage = await browserObj.newPage();
 
   await newpage.setViewport({ width: 1920, height: 1080 });
@@ -52,7 +61,7 @@ async function checkLaptops() {
     "https://simple.ripley.cl/tecno/mundo-apple/macbook?s=mdco"
   );
 
-  await newpage.waitForNetworkIdle(); // Wait for network resources to fully load
+  await newpage.waitForNetworkIdle(); // Esperar hasta que la red esté inactiva
 
   await newpage.screenshot({ path: "screenshot.png" });
 

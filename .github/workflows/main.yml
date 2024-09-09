@@ -2,24 +2,34 @@ name: Scrape
 
 on:
   schedule:
-    - cron: "35 * * * *"
+    - cron: "50 * * * *" # Se ejecutará a los 35 minutos de cada hora
 
 jobs:
-  resources:
+  scraper:
     name: Scraper
     runs-on: ubuntu-latest
     steps:
+      # Paso 1: Checkout del repositorio
       - uses: actions/checkout@v3
 
+      # Paso 2: Configurar Node.js y saltar la descarga de Chromium
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+        env:
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: "true"
+
+      # Paso 3: Instalar dependencias (npm install)
       - name: Install dependencies
         run: npm install
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      - name: Fetch Resources
+      # Paso 4: Ejecutar Puppeteer con headful (no headless) usando la imagen Docker de Puppeteer Headful
+      - name: Run Puppeteer Headful
+        uses: mujo-code/puppeteer-headful@16.6.0
         env:
           EMAIL_USER: ${{ secrets.EMAIL_USER }}
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
-        run: node ./index.js
+          CI: "true"
+        with:
+          args: node ./index.js
