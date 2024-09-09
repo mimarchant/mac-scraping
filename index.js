@@ -2,10 +2,12 @@ import puppeteer from "puppeteer";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 import puppeteerExtra from "puppeteer-extra";
-import stealth from "puppeteer-extra-plugin-stealth";
+import Stealth from "puppeteer-extra-plugin-stealth";
 
 // Cargar variables de entorno
 dotenv.config();
+
+puppeteerExtra.use(Stealth());
 
 // Configurar el servicio de correo (Gmail)
 const transporter = nodemailer.createTransport({
@@ -37,48 +39,24 @@ function sendEmail(subject, htmlContent) {
 
 // Función para hacer scraping
 async function checkLaptops() {
-  puppeteerExtra.use(Stealth());
-  /*   const browser = await puppeteer.launch({
-    headless: true, // Cambia a false para modo no headless
-    args: [
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-      "--disable-dev-shm-usage", // Esto puede ayudar a evitar problemas de uso de memoria en GitHub Actions
-      "--disable-blink-features=AutomationControlled", // Para evitar la detección
-    ],
-  }); */
+  const browserObj = await puppeteerExtra.launch();
+  const newpage = await browserObj.newPage();
 
-  const browser = puppeteerExtra.launch({
-    headless: true,
-    args: [
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-      "--disable-dev-shm-usage", // Esto puede ayudar a evitar problemas de uso de memoria en GitHub Actions
-      "--disable-blink-features=AutomationControlled", // Para evitar la detección
-    ],
-  });
-  const page = await browser.newPage();
+  await newpage.setViewport({ width: 1920, height: 1080 });
 
-  await page.setViewport({ width: 1920, height: 1080 });
-
-  await page.setUserAgent(
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36"
+  await newpage.setUserAgent(
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
   );
 
-  // Deshabilitar la detección de `navigator.webdriver`
-  await page.evaluateOnNewDocument(() => {
-    Object.defineProperty(navigator, "webdriver", {
-      get: () => false,
-    });
-  });
-  await page.goto("https://simple.ripley.cl/tecno/mundo-apple/macbook?s=mdco");
+  await newpage.goto(
+    "https://simple.ripley.cl/tecno/mundo-apple/macbook?s=mdco"
+  );
 
-  const content = await page.content();
-  console.log(content); // Esto imprimirá el HTML de la página para verificar si está cargando
+  await newpage.waitForNetworkIdle(); // Wait for network resources to fully load
 
-  await page.screenshot({ path: "screenshot.png" });
+  await newpage.screenshot({ path: "screenshot.png" });
 
-  const laptops = await page.$$eval(".catalog-product-item", (items) => {
+  const laptops = await newpage.$$eval(".catalog-product-item", (items) => {
     return items.map((item) => {
       const title = item
         .querySelector(".catalog-product-details__name")
@@ -94,7 +72,7 @@ async function checkLaptops() {
     });
   });
 
-  await browser.close();
+  await browserObj.close();
 
   console.log(laptops, "laptops encontrados");
 
