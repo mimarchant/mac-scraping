@@ -21,5 +21,5 @@ puppeteerExtra.use(Stealth());
 
   await newpage.screenshot({ path: "screenshot_stealth.png" });
 
-  /* await browserObj.close(); */
+  await browserObj.close();
 })();
