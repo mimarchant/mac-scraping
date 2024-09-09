@@ -1,6 +1,9 @@
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
-import puppeteer from "puppeteer";
+import puppeteerExtra from "puppeteer-extra";
+import Stealth from "puppeteer-extra-plugin-stealth";
+
+puppeteerExtra.use(Stealth());
 
 // Cargar variables de entorno
 dotenv.config();
@@ -33,18 +36,8 @@ function sendEmail(subject, htmlContent) {
   });
 }
 
-// Función para hacer scraping
-async function checkLaptops() {
-  const browserObj = await puppeteer.launch({
-    headless: false, // Usar headful en GitHub Actions
-    executablePath: process.env.PUPPETEER_EXEC_PATH || undefined, // Usar executablePath solo en GitHub Actions
-    args: [
-      "--no-sandbox", // Evita problemas de permisos
-      "--disable-setuid-sandbox",
-      "--disable-gpu", // Desactivar aceleración por GPU en entornos CI
-    ],
-  });
-
+(async () => {
+  const browserObj = await puppeteerExtra.launch();
   const newpage = await browserObj.newPage();
 
   await newpage.setViewport({ width: 1920, height: 1080 });
@@ -57,9 +50,9 @@ async function checkLaptops() {
     "https://simple.ripley.cl/tecno/mundo-apple/macbook?s=mdco"
   );
 
-  await newpage.waitForNetworkIdle(); // Esperar hasta que la red esté inactiva
+  await newpage.waitForNetworkIdle(); // Wait for network resources to fully load
 
-  await newpage.screenshot({ path: "screenshot.png" });
+  await newpage.screenshot({ path: "screenshot_stealth_index.png" });
 
   const laptops = await newpage.$$eval(".catalog-product-item", (items) => {
     return items.map((item) => {
@@ -97,7 +90,4 @@ async function checkLaptops() {
 
     sendEmail("Laptops Mac baratas encontradas", laptopInfoHTML);
   }
-}
-
-// Ejecuta el scraping al llamar al script
-checkLaptops();
+})();
