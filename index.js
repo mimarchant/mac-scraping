@@ -54,7 +54,7 @@ function sendEmail(subject, htmlContent) {
 
   await newpage.screenshot({ path: "screenshot_stealth_index_new.png" });
 
-  const laptops = await newpage.$$eval(".catalog-product-item", (items) => {
+  /*   const laptops = await newpage.$$eval(".catalog-product-item", (items) => {
     return items.map((item) => {
       const title = item
         .querySelector(".catalog-product-details__name")
@@ -68,17 +68,17 @@ function sendEmail(subject, htmlContent) {
         "link unavailable";
       return { title, price, link };
     });
-  });
+  }); */
 
   const content = await newpage.content();
   console.log(content, "content");
 
   await browserObj.close();
 
-  console.log(laptops, "laptops encontrados");
+  /*  console.log(laptops, "laptops encontrados"); */
 
   // Filtrar por laptops Mac y con precio menor a 800.000 pesos
-  const filteredLaptops = laptops.filter(
+  /*   const filteredLaptops = laptops.filter(
     (laptop) => laptop.title.includes("MACBOOK") && laptop.price < 800000
   );
 
@@ -92,5 +92,5 @@ function sendEmail(subject, htmlContent) {
       .join("\n");
 
     sendEmail("Laptops Mac baratas encontradas", laptopInfoHTML);
-  }
+  } */
 })();
