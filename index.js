@@ -52,7 +52,7 @@ function sendEmail(subject, htmlContent) {
 
   await newpage.waitForNetworkIdle(); // Wait for network resources to fully load
 
-  await newpage.screenshot({ path: "screenshot_stealth_index.png" });
+  await newpage.screenshot({ path: "screenshot_stealth_index_new.png" });
 
   const laptops = await newpage.$$eval(".catalog-product-item", (items) => {
     return items.map((item) => {
