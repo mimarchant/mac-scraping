@@ -4,9 +4,7 @@ import Stealth from "puppeteer-extra-plugin-stealth";
 puppeteerExtra.use(Stealth());
 
 (async () => {
-  const browserObj = await puppeteerExtra.launch({
-    headless: false,
-  });
+  const browserObj = await puppeteerExtra.launch();
   const newpage = await browserObj.newPage();
 
   await newpage.setViewport({ width: 1920, height: 1080 });
