@@ -2,7 +2,7 @@ name: Scrape
 
 on:
   schedule:
-    - cron: "40 * * * *" # Se ejecutará a los 35 minutos de cada hora
+    - cron: "25 * * * *" # Se ejecutará a los 35 minutos de cada hora
 
 jobs:
   scraper:
